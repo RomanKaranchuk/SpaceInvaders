@@ -1,0 +1,128 @@
+﻿<Window x:Name="MainWindow" 
+        x:Class="lab2.View.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="clr-namespace:lab2.Command"
+        xmlns:viewModel="clr-namespace:lab2.ViewModel"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:res="clr-namespace:lab2.Resources"
+        Title="{Binding Path=(res:Strings.MainWindow)}" MinHeight="500" MinWidth="850">
+  <Window.DataContext>
+    <viewModel:MainViewModel/>
+  </Window.DataContext>
+
+  <Window.InputBindings>
+    <KeyBinding Command="{Binding OpenFileCommand}" CommandParameter ="{Binding}" Key="O" Modifiers="Control"/>
+    <KeyBinding Command="{Binding SaveFileCommand}" CommandParameter ="{Binding}" Key="S" Modifiers="Control"/>
+  </Window.InputBindings>
+
+
+
+  <Window.Resources>
+    <ObjectDataProvider x:Key="releaseComparer"
+                        MethodName="GetValues"
+                        ObjectType="{x:Type sys:Enum}">
+      <ObjectDataProvider.MethodParameters>
+        <x:Type TypeName="viewModel:ReleaseComparer"/>
+      </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+  </Window.Resources>
+
+  <Grid >
+    <Grid.RowDefinitions>
+      <RowDefinition Height="20"/>
+      <RowDefinition />
+    </Grid.RowDefinitions>
+
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="250"/>
+      <ColumnDefinition Width="Auto"/>
+      <ColumnDefinition Width="201*"/>
+      <ColumnDefinition Width="20*"/>
+    </Grid.ColumnDefinitions>
+
+
+    <Menu Background="Transparent" Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Margin="0,0,400,0">
+      <MenuItem  x:Name ="FileItem" Header="{Binding Path=(res:Strings.FileItem)}">
+        <MenuItem x:Name ="OpenFile" Header="{Binding Path=(res:Strings.OpenFile)}" Command="{Binding OpenFileCommand}" CommandParameter="{Binding}">
+          <MenuItem.Icon>
+            <Image  Source="/Resources/Open.JPG"/>
+          </MenuItem.Icon>
+        </MenuItem>
+
+
+        <MenuItem x:Name ="SaveFile" Header="{Binding Path=(res:Strings.SaveFile)}" Command="{Binding SaveFileCommand}" CommandParameter="{Binding}">
+          <MenuItem.Icon>
+            <Image Source="/Resources/Save.JPG"/>
+          </MenuItem.Icon>
+        </MenuItem>
+      </MenuItem>
+      <MenuItem x:Name ="SettingItem" Header = "{Binding Path=(res:Strings.SettingItem)}">
+        <MenuItem x:Name="LangItem"  Header="{Binding Path=(res:Strings.LangItem)}">
+          <MenuItem x:Name="Russian" Header="{Binding Path=(res:Strings.Russian)}" Command="{Binding ChangeLangCommand}" >
+            <MenuItem.Icon>
+              <Image Source="/Resources/RU_flag.PNG"/>
+            </MenuItem.Icon>
+            <MenuItem.CommandParameter>
+              <sys:String>ru</sys:String>
+            </MenuItem.CommandParameter>
+          </MenuItem>
+          <MenuItem x:Name="English" Header="{Binding Path=(res:Strings.English)}" Command="{Binding ChangeLangCommand}">
+            <MenuItem.Icon>
+              <Image  Source="/Resources/EN_flag.PNG"/>
+            </MenuItem.Icon>
+            <MenuItem.CommandParameter>
+              <sys:String>en</sys:String>
+            </MenuItem.CommandParameter>
+          </MenuItem>
+        </MenuItem>
+      </MenuItem >
+    </Menu>
+
+    <StackPanel Margin="10,10,9,10" Grid.Row="1">
+      <TextBlock Text ="{Binding Path=(res:Strings.CompTxtBlk)}" x:Name="CompTxtBlk" />
+      <TextBox x:Name="CompTxtBox"  Text="{Binding SelectedTrack.Compositor, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="0,0,0,10"/>
+      <TextBlock Text ="{Binding Path=(res:Strings.NameTxtBlk)}" x:Name="NameTxtBlk" />
+      <TextBox x:Name ="NameTxtBox" Text="{Binding SelectedTrack.Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="0,0,0,10"/>
+      <TextBlock Text ="{Binding Path=(res:Strings.GenreTxtBlk)}" x:Name="GenreTxtBlk" />
+      <TextBox x:Name ="GenreTxtBox" Text="{Binding SelectedTrack.Genre, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="0,0,0,10"/>
+      <TextBlock x:Name="ReleaseTxtBlk" Text ="{Binding Path=(res:Strings.ReleaseTxtBlk)}"/>
+      <TextBox x:Name ="ReleaseTxtBox" Text="{Binding SelectedTrack.Release, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"  Margin="0,0,0,10"/>
+
+      <StackPanel Orientation="Vertical" Grid.Row="1">
+        <Button x:Name="AddNewButton" Content = "{Binding Path=(res:Strings.AddNewButton)}" Command="{Binding AddCommand}" CommandParameter="{Binding}"  Margin="5" Height="25" Width="100"/>
+        <Button x:Name="RemoveButton" Content = "{Binding Path=(res:Strings.RemoveButton)}" Command="{Binding RemoveCommand}" CommandParameter="{Binding}" Margin="5" Height="25" Width="100" />
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0,0,-19,0">
+        <ComboBox x:Name="ComparerComboBox" Margin="20,5,0,0" Height="25" Width="100"
+      		          ItemsSource="{Binding Source={StaticResource releaseComparer}}"
+      		          SelectedItem="{Binding SearchComparer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        />
+        <TextBox x:Name="TxtReleaseSearch" Height="25" Width="100" Margin="20,5,0,0"
+        	Text="{Binding QueryRelease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        />
+      </StackPanel>
+
+
+    </StackPanel>
+    <DataGrid Grid.Row="1" 
+    Grid.Column="1" MaxHeight="500" MinWidth="650"
+    Margin="53,26,126,10" 
+    Name="dataGrid"  
+    AutoGenerateColumns="False" 
+    VerticalScrollBarVisibility="Auto"
+    HorizontalScrollBarVisibility="Auto"
+    CanUserAddRows="False" IsReadOnly="True" 
+    SelectionUnit="FullRow"
+    SelectionMode="Single"
+    ItemsSource="{Binding Album, Mode=OneWay}" Grid.ColumnSpan="2">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="{Binding Path=(res:Strings.HeaderComp)}" Binding="{Binding Compositor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <DataGridTextColumn Header="{Binding Path=(res:Strings.HeaderName)}" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <DataGridTextColumn Header="{Binding Path=(res:Strings.HeaderGenre)}" Binding="{Binding Genre, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <DataGridTextColumn Header="{Binding Path=(res:Strings.HeaderRelease)}" Binding="{Binding Release, UpdateSourceTrigger=PropertyChanged, StringFormat={}}"/>
+      </DataGrid.Columns>
+
+    </DataGrid>
+  </Grid>
+</Window>
