@@ -11,13 +11,13 @@ import com.invaders.TextureManager;
  * Created by NotePad.by on 07.06.2016.
  */
 public class BonusShield extends Entity{
-    private static final int        FRAME_COLS = 5;         // #1
-    private static final int        FRAME_ROWS = 4;         // #2
+    private static final int        FRAME_COLS = 5;
+    private static final int        FRAME_ROWS = 4;
 
-    private Animation animation;          // #3
-    private Texture sheet;              // #4
-    private TextureRegion[]                 frames;             // #5
-    private TextureRegion currentFrame;           // #7
+    private Animation animation;
+    private Texture sheet;
+    private TextureRegion[]                 frames;
+    private TextureRegion currentFrame;
 
     public TextureRegion getCurrentFrame(){
         return this.currentFrame;
@@ -33,10 +33,10 @@ public class BonusShield extends Entity{
     }
     public BonusShield(Vector2 pos, Vector2 dir){
         super(TextureManager.BONUS_SHIELD, pos, dir);
-        sheet = TextureManager.BONUS_SHIELD_SHEET; // #9
+        sheet = TextureManager.BONUS_SHIELD_SHEET;
         TextureRegion[][] tmp = TextureRegion.split(sheet,
                 sheet.getWidth()/FRAME_COLS,
-                sheet.getHeight()/FRAME_ROWS);              // #10
+                sheet.getHeight()/FRAME_ROWS);
         frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
         int index = 0;
         for (int i = 0; i < FRAME_ROWS; i++) {
@@ -44,7 +44,7 @@ public class BonusShield extends Entity{
                 frames[index++] = tmp[i][j];
             }
         }
-        animation = new Animation(1f/30f, frames);      // #11
+        animation = new Animation(1f/30f, frames);
     }
     @Override
     public void update() {

@@ -110,6 +110,41 @@ public class EntityManager implements java.io.Serializable{
         scoreFont.draw(sb,"Score: "+scoreValue, 0,MainGame.HEIGHT);
     }
     private void checkCollisions(){
+        checkCollisionBonusShieldPlayer();
+        checkCollisionBonusBulletsPlayer();
+        checkCollisionEnemyProjectils();
+        if (gameOver()){
+            toSerializateScore();
+            ScreenManager.setScreen(new MenuOrExitGameOverScreen(true));
+            AudioManager.setMusic(AudioManager.winTheme);
+        }
+        if (!player.getHasShield()){
+            checkCollisionPlayerEnemy();
+        }
+    }
+    private void checkCollisionBonusShieldPlayer(){
+        for (BonusShield bs : getBonusShield()) {
+            if (bs.getBounds().overlaps(player.getBounds())) {
+                player.setHasShield(false);
+                player.setStartShield(0);
+                player.setHasShield(true);
+                if (player.getStartShield() == 0){
+                    player.setStartShield(System.currentTimeMillis());
+                }
+                entities.remove(bs);
+            }
+        }
+    }
+    private void checkCollisionBonusBulletsPlayer(){
+        for (BonusBullets bb : getBonusBullets()) {
+            if (bb.getBounds().overlaps(player.getBounds())){
+                AudioManager.setSound(AudioManager.findBonus, false);
+                context.setStrategy(new StrategyTripleShooting(player,System.currentTimeMillis()));
+                entities.remove(bb);
+            }
+        }
+    }
+    private void checkCollisionEnemyProjectils(){
         for (Enemy e : getEnemies()){
             for (Entity proj : getProjectils()){ // getMissiles
                 if (e.getBounds().overlaps(proj.getBounds())){
@@ -123,7 +158,7 @@ public class EntityManager implements java.io.Serializable{
                         AudioManager.setSound(AudioManager.enemyExplosion, false);
                         scoreValue += 10;
                         entities.remove(e);
-                        int randInt = MathUtils.random(1,15);//(0,15)
+                        int randInt = MathUtils.random(1,2);//(0,15)
                         if (randInt == 1) {
                             bonusBullets = new BonusBullets(new Vector2(e.pos.x, e.pos.y), new Vector2(0, 0));
                             entities.add(bonusBullets);
@@ -133,11 +168,11 @@ public class EntityManager implements java.io.Serializable{
                         }
                     }
                     entities.remove(proj);
-
                 }
             }
         }
     }
+
     private void checkCollisionPlayerEnemy(){
         for (Enemy e : getEnemies()) {
             if (e.getBounds().overlaps(player.getBounds())) {

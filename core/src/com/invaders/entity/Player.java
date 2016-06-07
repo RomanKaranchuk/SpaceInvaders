@@ -19,7 +19,6 @@ public class Player extends  Entity implements java.io.Serializable{
     private BonusShield bonusShield;
     private boolean hasShield = false;
     private long startShield = 0;
-    private boolean flag = true;
 
     float stateTime = 0f;
     int countFrames = 0;
@@ -62,6 +61,7 @@ public class Player extends  Entity implements java.io.Serializable{
         super.render(batch);
 
         if (this.hasShield) {
+            System.out.println();
             stateTime += Gdx.graphics.getDeltaTime();
             if (countFrames < 8 ||
                     System.currentTimeMillis()-this.startShield>5000) {
@@ -74,8 +74,10 @@ public class Player extends  Entity implements java.io.Serializable{
                 this.setStartShield(0);
             } else if (5000<System.currentTimeMillis()-startShield &&
                     System.currentTimeMillis()-startShield<10000){
+                this.bonusShield.setCurrentFrame(this.bonusShield.getAnimation().getKeyFrame(stateTime, true));
             }
             countFrames += 1;
+
             batch.draw(this.bonusShield.getCurrentFrame(),
                     this.getPosition().x - 28,
                     this.getPosition().y - 35);
