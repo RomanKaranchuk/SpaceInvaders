@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
  * Created by NotePad.by on 29.05.2016.
  */
 public class TextureManager {
+
+    public static Texture BONUS_SHIELD= new Texture(Gdx.files.internal("shield20x24.png"));
+    public static Texture BONUS_SHIELD_SHEET = new Texture(Gdx.files.internal("shieldSheetS.png"));
     public static Texture EXPLOSION = new Texture(Gdx.files.internal("sprite-explosion.png"));
     public static Texture PLAYER = new Texture(Gdx.files.internal("playerS.png"));
     public static Texture MISSILE = new Texture(Gdx.files.internal("missile.png"));

@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * Created by NotePad.by on 06.06.2016.
  */
-public class StrategySingleShooting implements Strategy{
+public class StrategySingleShooting implements Strategy ,java.io.Serializable{
     private Player player;
     public StrategySingleShooting(Player player){
         this.player = player;

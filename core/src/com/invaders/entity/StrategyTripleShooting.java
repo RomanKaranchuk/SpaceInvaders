@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * Created by NotePad.by on 06.06.2016.
  */
-public class StrategyTripleShooting implements Strategy{
+public class StrategyTripleShooting implements Strategy, java.io.Serializable{
     private Player player;
     private long startTimeBonus, durBonus=5000;
     public StrategyTripleShooting(Player player, long startTimeBonus){

@@ -2,9 +2,8 @@ package com.invaders.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.invaders.AudioManager;
 import com.invaders.MainGame;
 import com.invaders.TextureManager;
 import com.invaders.camera.OrthoCamera;
@@ -17,13 +16,35 @@ public class Player extends  Entity implements java.io.Serializable{
     private long lastMissileFire;
     private long lastGunFire;
     private OrthoCamera camera;
+    private BonusShield bonusShield;
+    private boolean hasShield = false;
+    private long startShield = 0;
+    private boolean flag = true;
 
+    float stateTime = 0f;
+    int countFrames = 0;
+
+    public void setHasShield(boolean hasShield){
+        this.hasShield = hasShield;
+        stateTime = 0f;
+        countFrames = 0;
+    }
+    public boolean getHasShield(){
+        return this.hasShield;
+    }
+    public float getStartShield(){
+        return this.startShield;
+    }
+    public void setStartShield(long startShield){
+        this.startShield = startShield;
+    }
     public Player(){}
 
     public Player(Vector2 pos, Vector2 direction, EntityManager entityManager, OrthoCamera camera){
         super(TextureManager.PLAYER, pos, direction);
         this.entityManager = entityManager;
         this.camera = camera;
+        this.bonusShield = new BonusShield(getPosition(),new Vector2(0,0));
     }
 
     public EntityManager getEntityManager(){
@@ -34,6 +55,31 @@ public class Player extends  Entity implements java.io.Serializable{
     }
     public void setLastGunFire(long newLastGunFire){
         this.lastGunFire = newLastGunFire;
+    }
+
+    @Override
+    public void render(SpriteBatch batch){
+        super.render(batch);
+
+        if (this.hasShield) {
+            stateTime += Gdx.graphics.getDeltaTime();
+            if (countFrames < 8 ||
+                    System.currentTimeMillis()-this.startShield>5000) {
+                this.bonusShield.setCurrentFrame(this.bonusShield.getAnimation().getKeyFrame(stateTime, true));
+            } else if (countFrames >= 8) {
+                this.bonusShield.setCurrentFrame(this.bonusShield.getAnimation().getKeyFrame(0.30f, false));
+            }
+            if (System.currentTimeMillis() -startShield>10000){
+                this.hasShield = false;
+                this.setStartShield(0);
+            } else if (5000<System.currentTimeMillis()-startShield &&
+                    System.currentTimeMillis()-startShield<10000){
+            }
+            countFrames += 1;
+            batch.draw(this.bonusShield.getCurrentFrame(),
+                    this.getPosition().x - 28,
+                    this.getPosition().y - 35);
+        }
     }
 
     @Override

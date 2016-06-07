@@ -1,6 +1,5 @@
 package com.invaders.entity;
 
-import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -14,7 +13,6 @@ import com.invaders.camera.OrthoCamera;
 import com.invaders.screen.MenuOrExitGameOverScreen;
 import com.invaders.screen.ScreenManager;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -32,7 +30,8 @@ public class EntityManager implements java.io.Serializable{
     private long startTime, tempStartTime;
     private int amountEnemy;
     private Context context;
-    private Bonus bonus;
+    private BonusBullets bonusBullets;
+    private BonusShield bonusShield;
 
 
 
@@ -55,6 +54,7 @@ public class EntityManager implements java.io.Serializable{
         player = new Player(new Vector2(200, 15), new Vector2(0, 0), this, camera);
         addExtraEnemy(amount);
         AudioManager.mainTheme.setLooping(true);
+        AudioManager.mainTheme.setVolume(0.1f);
         AudioManager.setMusic(AudioManager.mainTheme);
         scoreFont = new BitmapFont();
         scoreValue = 0;
@@ -74,7 +74,7 @@ public class EntityManager implements java.io.Serializable{
 
         if ((System.currentTimeMillis() - tempStartTime >= 10000) &&
                 (tempStartTime - startTime <= 30000)){
-            addExtraEnemy(amountEnemy);
+//            addExtraEnemy(amountEnemy);
             tempStartTime = System.currentTimeMillis();
         }
 
@@ -98,7 +98,7 @@ public class EntityManager implements java.io.Serializable{
                 e.texture = TextureManager.PLAYER;
             } else if (e instanceof Missile){
                 e.texture = TextureManager.MISSILE;
-            } else if (e instanceof  Bonus){
+            } else if (e instanceof BonusBullets){
                 e.texture = TextureManager.BONUS;
             }
             e.render(sb);
@@ -123,30 +123,27 @@ public class EntityManager implements java.io.Serializable{
                         AudioManager.setSound(AudioManager.enemyExplosion, false);
                         scoreValue += 10;
                         entities.remove(e);
-                        if (MathUtils.random(0,15) == 1) {
-                            bonus = new Bonus(new Vector2(e.pos.x, e.pos.y), new Vector2(0, 0));
-                            entities.add(bonus);
+                        int randInt = MathUtils.random(1,15);//(0,15)
+                        if (randInt == 1) {
+                            bonusBullets = new BonusBullets(new Vector2(e.pos.x, e.pos.y), new Vector2(0, 0));
+                            entities.add(bonusBullets);
+                        } else if (randInt == 2){
+                            bonusShield = new BonusShield(new Vector2(e.pos.x, e.pos.y), new Vector2(0, 0));
+                            entities.add(bonusShield);
                         }
                     }
                     entities.remove(proj);
-                    if (gameOver()){
-                        toSerializateScore();
-                        ScreenManager.setScreen(new MenuOrExitGameOverScreen(true));
-                        AudioManager.setMusic(AudioManager.winTheme);
-                    }
+
                 }
             }
+        }
+    }
+    private void checkCollisionPlayerEnemy(){
+        for (Enemy e : getEnemies()) {
             if (e.getBounds().overlaps(player.getBounds())) {
                 toSerializateScore();
                 ScreenManager.setScreen(new MenuOrExitGameOverScreen(false));
                 AudioManager.setMusic(AudioManager.gameOverTheme);
-            }
-        }
-        for (Bonus b : getBonus()){
-            if (b.getBounds().overlaps(player.getBounds())){
-                AudioManager.setSound(AudioManager.findBonus, false);
-                context.setStrategy(new StrategyTripleShooting(player,System.currentTimeMillis()));
-                entities.remove(b);
             }
         }
     }
@@ -199,11 +196,18 @@ public class EntityManager implements java.io.Serializable{
                 ret.add((Missile)e);
         return ret;
     }
-    private Array<Bonus> getBonus(){
-        Array<Bonus> ret = new Array<Bonus>();
+    private Array<BonusBullets> getBonusBullets(){
+        Array<BonusBullets> ret = new Array<BonusBullets>();
         for (Entity e : entities)
-            if (e instanceof Bonus)
-                ret.add((Bonus)e);
+            if (e instanceof BonusBullets)
+                ret.add((BonusBullets)e);
+        return ret;
+    }
+    private Array<BonusShield> getBonusShield(){
+        Array<BonusShield> ret = new Array<BonusShield>();
+        for (Entity e : entities)
+            if (e instanceof BonusShield)
+                ret.add((BonusShield)e);
         return ret;
     }
 

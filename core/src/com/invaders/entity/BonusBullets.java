@@ -7,8 +7,8 @@ import com.invaders.TextureManager;
 /**
  * Created by NotePad.by on 06.06.2016.
  */
-public class Bonus extends Entity{
-    public Bonus(Vector2 pos, Vector2 dir) {
+public class BonusBullets extends Entity{
+    public BonusBullets(Vector2 pos, Vector2 dir) {
         super(TextureManager.BONUS, pos, dir);
     }
 
