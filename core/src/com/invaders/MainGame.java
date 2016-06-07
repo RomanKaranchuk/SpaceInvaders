@@ -80,24 +80,18 @@ public class MainGame implements ApplicationListener {
 		stateTime += Gdx.graphics.getDeltaTime();           // #15
 //
 //		if (countFrames < 8) {
-			currentFrame = animation.getKeyFrame(stateTime, true);  // #16
+//			currentFrame = animation.getKeyFrame(stateTime, true);  // #16
 //		} else {
 //			currentFrame = animation.getKeyFrame(0.30f, false);  // #16
 //		}
 		countFrames+=1;
 
-
 		batch.begin();
-
 		pe.draw(batch);
-		batch.draw(currentFrame, 0, 0);             // #17
-
+//		batch.draw(currentFrame, 0, 0);             // #17
 		batch.end();
 		if (pe.isComplete())
 			pe.reset();
-
-
-
 	}
 
 	@Override

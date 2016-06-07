@@ -17,5 +17,5 @@ public class TextureManager {
     public static Texture GAME_OVER = new Texture(Gdx.files.internal("fail.png"));
     public static Texture GAME_WON = new Texture(Gdx.files.internal("gamewon.png"));
     public static Texture BULLET = new Texture(Gdx.files.internal("bullet8x18.png"));
-    public static Texture BONUS = new Texture(Gdx.files.internal("bonus_box_patrons20x24.png"));
+    public static Texture BONUS_BULLETS = new Texture(Gdx.files.internal("bonus_box_patrons20x24.png"));
 }

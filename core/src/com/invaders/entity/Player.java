@@ -61,7 +61,6 @@ public class Player extends  Entity implements java.io.Serializable{
         super.render(batch);
 
         if (this.hasShield) {
-            System.out.println();
             stateTime += Gdx.graphics.getDeltaTime();
             if (countFrames < 8 ||
                     System.currentTimeMillis()-this.startShield>5000) {

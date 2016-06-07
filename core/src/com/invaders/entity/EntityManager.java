@@ -1,5 +1,6 @@
 package com.invaders.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -30,8 +31,6 @@ public class EntityManager implements java.io.Serializable{
     private long startTime, tempStartTime;
     private int amountEnemy;
     private Context context;
-    private BonusBullets bonusBullets;
-    private BonusShield bonusShield;
 
 
 
@@ -74,10 +73,17 @@ public class EntityManager implements java.io.Serializable{
 
         if ((System.currentTimeMillis() - tempStartTime >= 10000) &&
                 (tempStartTime - startTime <= 30000)){
-//            addExtraEnemy(amountEnemy);
+            addExtraEnemy(amountEnemy);
             tempStartTime = System.currentTimeMillis();
         }
-
+        for (BonusBullets bb : getBonusBullets())
+            if (System.currentTimeMillis() - bb.getBornTime() > bb.getLifeTime()){
+                entities.remove(bb);
+            }
+        for (BonusShield bs : getBonusShield())
+            if (System.currentTimeMillis() - bs.getBornTime() > bs.getLifeTime()){
+                entities.remove(bs);
+            }
         for (Entity e : entities)
             e.update();
         for (Missile m : getMissiles())
@@ -86,21 +92,22 @@ public class EntityManager implements java.io.Serializable{
         for (Bullet b : getBullets())
             if (b.checkEnd())
                 entities.remove(b);
+        for (Explosion exp : getExplosion()){
+            if (exp.getAnimation().isAnimationFinished(exp.getStateTime()))
+                entities.remove(exp);
+        }
         player.update();
         checkCollisions();
     }
 
     public void render(SpriteBatch sb){
         for (Entity e : entities) {
-            if (e instanceof Enemy){
+            if (e instanceof Enemy) {
                 e.texture = TextureManager.ENEMY;
-            } else if (e instanceof Player){
+            } else if (e instanceof Player) {
                 e.texture = TextureManager.PLAYER;
-            } else if (e instanceof Missile){
-                e.texture = TextureManager.MISSILE;
-            } else if (e instanceof BonusBullets){
-                e.texture = TextureManager.BONUS;
-            }
+            } else if (e instanceof Missile) {
+                e.texture = TextureManager.MISSILE;}
             e.render(sb);
         }
         player.texture = TextureManager.PLAYER;
@@ -149,21 +156,25 @@ public class EntityManager implements java.io.Serializable{
             for (Entity proj : getProjectils()){ // getMissiles
                 if (e.getBounds().overlaps(proj.getBounds())){
                     if (proj instanceof Missile) {
-                        e.setDamage(2);
+                        e.setDamage(20);
                     }
                     else if (proj instanceof Bullet) {
-                        e.setDamage(1);
+                        e.setDamage(18);
                     }
                     if (e.getDamage() <= 0) {
                         AudioManager.setSound(AudioManager.enemyExplosion, false);
+                        Explosion curExplosion = new Explosion(e.getPosition(), new Vector2(0,0));
+                        entities.add(curExplosion);
                         scoreValue += 10;
                         entities.remove(e);
-                        int randInt = MathUtils.random(1,2);//(0,15)
+                        int randInt = MathUtils.random(0,15);//(0,15)
                         if (randInt == 1) {
-                            bonusBullets = new BonusBullets(new Vector2(e.pos.x, e.pos.y), new Vector2(0, 0));
+                            BonusBullets bonusBullets = new BonusBullets(new Vector2(e.pos.x, e.pos.y), new Vector2(0, 0));
+                            bonusBullets.setBornTime(System.currentTimeMillis());
                             entities.add(bonusBullets);
                         } else if (randInt == 2){
-                            bonusShield = new BonusShield(new Vector2(e.pos.x, e.pos.y), new Vector2(0, 0));
+                            BonusShield bonusShield = new BonusShield(new Vector2(e.pos.x, e.pos.y), new Vector2(0, 0));
+                            bonusShield.setBornTime(System.currentTimeMillis());
                             entities.add(bonusShield);
                         }
                     }
@@ -253,6 +264,15 @@ public class EntityManager implements java.io.Serializable{
                 ret.add((Bullet) e);
             } else if (e instanceof Missile){
                 ret.add((Missile) e);
+            }
+        }
+        return ret;
+    }
+    private Array<Explosion> getExplosion(){
+        Array<Explosion> ret = new Array<Explosion>();
+        for (Entity e : entities) {
+            if (e instanceof Explosion) {
+                ret.add((Explosion) e);
             }
         }
         return ret;

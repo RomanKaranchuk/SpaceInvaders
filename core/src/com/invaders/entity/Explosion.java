@@ -1,7 +1,9 @@
 package com.invaders.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.invaders.TextureManager;
@@ -13,10 +15,11 @@ public class Explosion extends Entity{
     private static final int        FRAME_COLS = 5;
     private static final int        FRAME_ROWS = 5;
 
-    private Animation animation;
-    private Texture sheet;
-    private TextureRegion[] frames;
-    private TextureRegion currentFrame;
+    private transient Animation animation;
+    private transient Texture sheet;
+    private transient TextureRegion[] frames;
+    private transient TextureRegion currentFrame;
+    private float stateTime;
 
     public TextureRegion getCurrentFrame(){
         return this.currentFrame;
@@ -41,7 +44,16 @@ public class Explosion extends Entity{
                 frames[index++] = tmp[i][j];
             }
         }
-        animation = new Animation(1f/30f, frames);
+        animation = new Animation(1f/60f, frames);
+        stateTime = 0f;
+    }
+    public float getStateTime(){
+        stateTime += Gdx.graphics.getDeltaTime();
+        return this.stateTime;
+    }
+    public void render(SpriteBatch sb){
+        this.setCurrentFrame(this.getAnimation().getKeyFrame(this.getStateTime(),false));
+        sb.draw(currentFrame, this.getPosition().x, this.getPosition().y);
     }
 
     @Override

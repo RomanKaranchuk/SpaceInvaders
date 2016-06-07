@@ -11,14 +11,19 @@ import com.invaders.TextureManager;
  * Created by NotePad.by on 07.06.2016.
  */
 public class BonusShield extends Entity{
+    private long lifeTime = 5000;
+    private long bornTime ;
+
     private static final int        FRAME_COLS = 5;
     private static final int        FRAME_ROWS = 4;
+    private transient Animation animation;
+    private transient Texture sheet;
+    private transient TextureRegion[]                 frames;
+    private transient TextureRegion currentFrame;
 
-    private Animation animation;
-    private Texture sheet;
-    private TextureRegion[]                 frames;
-    private TextureRegion currentFrame;
-
+    public long getBornTime(){return this.bornTime;}
+    public void setBornTime(long bornTime){this.bornTime = bornTime;}
+    public long getLifeTime(){return this.lifeTime;}
     public TextureRegion getCurrentFrame(){
         return this.currentFrame;
     }
@@ -27,9 +32,6 @@ public class BonusShield extends Entity{
     }
     public Animation getAnimation(){
         return this.animation;
-    }
-    public void setAnimation(float freqFrames, TextureRegion[] frames){
-        this.animation = new Animation(freqFrames, frames);
     }
     public BonusShield(Vector2 pos, Vector2 dir){
         super(TextureManager.BONUS_SHIELD, pos, dir);

@@ -14,9 +14,8 @@ import com.invaders.TextureManager;
  * Created by NotePad.by on 29.05.2016.
  */
 public class Enemy extends Entity implements java.io.Serializable{
-
-
-    private int damage = 5;
+    private float stateTime = 0;
+    private int damage = 100;
 
     public Enemy(Vector2 pos, Vector2 direction){
         super(TextureManager.ENEMY, pos, direction);
@@ -28,6 +27,10 @@ public class Enemy extends Entity implements java.io.Serializable{
         this.damage -= damage;
     }
 
+    @Override
+    public void render(SpriteBatch batch){
+        batch.draw(texture,pos.x, pos.y);
+    }
     @Override
     public void update() {
         pos.add(direction);
