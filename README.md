@@ -1,2 +1,2 @@
 # SpaceInvaders
-# Shoot 'em up game on Java
+Shoot 'em up game on Java
