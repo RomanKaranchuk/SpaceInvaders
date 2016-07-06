@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.invaders.AudioManager;
 import com.invaders.MainGame;
 import com.invaders.SerializationScore;
@@ -43,7 +44,11 @@ public class HighscoreScreen extends Screen {
 
     @Override
     public void render(SpriteBatch sb) {
-        sb.setProjectionMatrix(camera.combined);
+        Matrix4 normalProjection = new Matrix4().setToOrtho2D(0,0,
+                Gdx.graphics.getWidth(),
+                Gdx.graphics.getHeight());
+        sb.setProjectionMatrix(normalProjection);
+
         sb.begin();
         String highscores = "";
         String ws = "           ";
@@ -57,7 +62,9 @@ public class HighscoreScreen extends Screen {
         for (Score s : scores){
             highscores += s.getId()+ ws+s.getPlayerName() +ws+ s.getScoreValue() +"\n";
         }
-        font.draw(sb,"HIGHSCORES"+"\n\n"+"ID"+ws+"NAME"+ws+"SCORE"+"\n"+highscores, MainGame.WIDTH/3, MainGame.HEIGHT-50);
+        font.draw(sb,"HIGHSCORES"+"\n\n"+"ID"+ws+"NAME"+ws+"SCORE"+"\n"+highscores,
+                Gdx.graphics.getWidth()/3,
+                Gdx.graphics.getHeight()-50);
         sb.end();
     }
 

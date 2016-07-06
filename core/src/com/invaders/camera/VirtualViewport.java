@@ -4,8 +4,9 @@ package com.invaders.camera;
  * Created by NotePad.by on 28.05.2016.
  */
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class VirtualViewport implements java.io.Serializable {
+public class VirtualViewport extends Viewport implements java.io.Serializable {
     float virtualWidth;
     float virtualHeight;
 

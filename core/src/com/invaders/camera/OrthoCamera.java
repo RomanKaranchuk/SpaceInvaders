@@ -32,6 +32,7 @@ public class OrthoCamera extends OrthographicCamera implements java.io.Serializa
     public void setVirtualViewport(VirtualViewport virtualViewport){
         this.virtualViewport = virtualViewport;
     }
+
     public void setPosition(float x, float y){
         position.set(x -viewportWidth * origin.x , y - viewportHeight * origin.y, 0f);
         pos.set(x, y);

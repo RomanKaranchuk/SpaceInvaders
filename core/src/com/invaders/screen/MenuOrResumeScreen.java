@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.invaders.AudioManager;
 import com.invaders.MainGame;
 import com.invaders.SerializationEntityManager;
@@ -89,15 +90,22 @@ public class MenuOrResumeScreen extends Screen {
 
     @Override
     public void render(SpriteBatch sb) {
-        sb.setProjectionMatrix(camera.combined);
+        Matrix4 normalProjection = new Matrix4().setToOrtho2D(0,0,
+                Gdx.graphics.getWidth(),
+                Gdx.graphics.getHeight());
+        sb.setProjectionMatrix(normalProjection);
         sb.begin();
-        questFont.draw(sb,"Do you want go to menu Space Invaders?",MainGame.WIDTH/3, 525);
+        questFont.draw(sb,"Do you want go to menu Space Invaders?",
+                Gdx.graphics.getWidth()/3,
+                Gdx.graphics.getHeight()*0.75f);
         for (int i = 0; i <selectItems.length; i++){
             if (currentItem == i)
                 font.setColor(Color.RED);
             else
                 font.setColor(Color.WHITE);
-            font.draw(sb,selectItems[i], MainGame.WIDTH/2 + 35*i, 480-35);
+            font.draw(sb,selectItems[i],
+                    Gdx.graphics.getWidth()/2 + 70*i,
+                    Gdx.graphics.getHeight()*0.7f);
         }
         sb.end();
     }

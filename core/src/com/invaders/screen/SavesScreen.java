@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.invaders.AudioManager;
 import com.invaders.MainGame;
 import com.invaders.SerializationEntityManager;
@@ -70,14 +71,23 @@ public class SavesScreen extends Screen {
 
     @Override
     public void render(SpriteBatch sb) {
-        sb.setProjectionMatrix(camera.combined);
+        Matrix4 normalProjection = new Matrix4().setToOrtho2D(0,0,
+                Gdx.graphics.getWidth(),
+                Gdx.graphics.getHeight());
+        sb.setProjectionMatrix(normalProjection);
         sb.begin();
         for (int i = menuItems.size()-1; i >=0; i--){
             if (currentItem == i) font.setColor(Color.RED);
             else font.setColor(Color.WHITE);
-            font.draw(sb,menuItems.get(i),MainGame.WIDTH/2, 480-35*i);
+            font.draw(sb,
+                    menuItems.get(i),
+                    Gdx.graphics.getWidth()/2,
+                    Gdx.graphics.getHeight()*0.6f-35*i);
         }
-        titleFont.draw(sb,"SELECT SAVE", MainGame.WIDTH/3, 525);
+        titleFont.draw(sb,
+                "SELECT SAVE",
+                Gdx.graphics.getWidth()/3,
+                Gdx.graphics.getHeight()*0.65f);
         sb.end();
     }
 

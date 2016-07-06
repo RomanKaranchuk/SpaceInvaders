@@ -28,6 +28,20 @@ public class Explosion extends Entity{
         this.currentFrame = currentFrame;
     }
     public Animation getAnimation(){
+        if (this.animation == null) {
+            this.sheet = TextureManager.EXPLOSION;
+            TextureRegion[][] tmp = TextureRegion.split(sheet,
+                    sheet.getWidth() / FRAME_COLS,
+                    sheet.getHeight() / FRAME_ROWS);
+            frames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+            int index = 0;
+            for (int i = 0; i < FRAME_ROWS; i++) {
+                for (int j = 0; j < FRAME_COLS; j++) {
+                    frames[index++] = tmp[i][j];
+                }
+            }
+            this.animation = new Animation(1f / 60f, frames);
+        }
         return this.animation;
     }
 

@@ -3,6 +3,7 @@ package com.invaders.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.invaders.AudioManager;
 import com.invaders.camera.OrthoCamera;
 import com.invaders.entity.EntityManager;
@@ -14,9 +15,11 @@ public class GameScreen extends Screen {
 
     private OrthoCamera camera;
     private static EntityManager entityManager;
+
     public static EntityManager getEntityManager(){
         return entityManager;
     }
+
 
     public GameScreen(){
 
@@ -30,7 +33,7 @@ public class GameScreen extends Screen {
     public void create() {
         if (camera == null || entityManager == null) {
             camera = new OrthoCamera();
-            entityManager = new EntityManager(20, camera);
+            entityManager = new EntityManager(10, camera);
         }
     }
 
@@ -48,7 +51,10 @@ public class GameScreen extends Screen {
 
     @Override
     public void render(SpriteBatch sb) {
-        sb.setProjectionMatrix(camera.combined);
+        Matrix4 normalProjection = new Matrix4().setToOrtho2D(0,0,
+                Gdx.graphics.getWidth(),
+                Gdx.graphics.getHeight());
+        sb.setProjectionMatrix(normalProjection);
         sb.begin();
         entityManager.render(sb);
         sb.end();
@@ -61,16 +67,13 @@ public class GameScreen extends Screen {
 
     @Override
     public void dispose() {
-
     }
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 }

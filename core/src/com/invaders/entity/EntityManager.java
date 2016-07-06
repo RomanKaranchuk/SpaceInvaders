@@ -41,16 +41,16 @@ public class EntityManager implements java.io.Serializable{
 
     public void addExtraEnemy(int amount){
         for (int i = 0; i < amount; i++) {
-            float x = MathUtils.random(0, MainGame.WIDTH - TextureManager.ENEMY.getWidth());
-            float y = MathUtils.random(MainGame.HEIGHT, MainGame.HEIGHT * 4);
-            float speed = MathUtils.random(5, 8);
+            float x = MathUtils.random(0, Gdx.graphics.getWidth() - TextureManager.ENEMY.getWidth());
+            float y = MathUtils.random(Gdx.graphics.getHeight(), Gdx.graphics.getHeight() * 2);
+            float speed = MathUtils.random(1, 1.5f);
             addEntity(new Enemy(new Vector2(x, y), new Vector2(0, -speed)));
         }
     }
 
     public EntityManager(int amount, OrthoCamera camera) {
         startTime = System.currentTimeMillis();
-        player = new Player(new Vector2(200, 15), new Vector2(0, 0), this, camera);
+        player = new Player(new Vector2(Gdx.graphics.getWidth()/2-TextureManager.PLAYER.getWidth()/2, 15), new Vector2(0, 0), this, camera);
         addExtraEnemy(amount);
         AudioManager.mainTheme.setLooping(true);
         AudioManager.mainTheme.setVolume(0.1f);
@@ -70,20 +70,23 @@ public class EntityManager implements java.io.Serializable{
     }
 
     public void update(){
-
         if ((System.currentTimeMillis() - tempStartTime >= 10000) &&
                 (tempStartTime - startTime <= 30000)){
-            addExtraEnemy(amountEnemy);
+//            addExtraEnemy(amountEnemy);
             tempStartTime = System.currentTimeMillis();
         }
-        for (BonusBullets bb : getBonusBullets())
-            if (System.currentTimeMillis() - bb.getBornTime() > bb.getLifeTime()){
+        for (BonusBullets bb : getBonusBullets()) {
+            if (System.currentTimeMillis() - bb.getBornTime() > bb.getLifeTime()) {
                 entities.remove(bb);
             }
-        for (BonusShield bs : getBonusShield())
-            if (System.currentTimeMillis() - bs.getBornTime() > bs.getLifeTime()){
+        }
+
+        for (BonusShield bs : getBonusShield()) {
+
+            if (System.currentTimeMillis() - bs.getBornTime() > bs.getLifeTime()) {
                 entities.remove(bs);
             }
+        }
         for (Entity e : entities)
             e.update();
         for (Missile m : getMissiles())
@@ -107,14 +110,27 @@ public class EntityManager implements java.io.Serializable{
             } else if (e instanceof Player) {
                 e.texture = TextureManager.PLAYER;
             } else if (e instanceof Missile) {
-                e.texture = TextureManager.MISSILE;}
+                e.texture = TextureManager.MISSILE;
+            } else if (e instanceof BonusBullets) {
+                e.texture = TextureManager.BONUS_BULLETS;
+            } else if (e instanceof Explosion){
+                e.texture = TextureManager.EXPLOSION;
+            } else if (e instanceof BonusShield) {
+                e.texture = TextureManager.BONUS_SHIELD;
+            } else if (e instanceof Bullet){
+                e.texture = TextureManager.BULLET;
+            }
             e.render(sb);
         }
         player.texture = TextureManager.PLAYER;
+
+        player.setStage();
+        player.setBonusShield();
+
         player.render(sb);
         if (scoreFont == null)
             scoreFont = new BitmapFont();
-        scoreFont.draw(sb,"Score: "+scoreValue, 0,MainGame.HEIGHT);
+        scoreFont.draw(sb,"Score: "+scoreValue, 0,Gdx.graphics.getHeight());
     }
     private void checkCollisions(){
         checkCollisionBonusShieldPlayer();
@@ -126,7 +142,7 @@ public class EntityManager implements java.io.Serializable{
             AudioManager.setMusic(AudioManager.winTheme);
         }
         if (!player.getHasShield()){
-            checkCollisionPlayerEnemy();
+//            checkCollisionPlayerEnemy();
         }
     }
     private void checkCollisionBonusShieldPlayer(){
@@ -156,7 +172,7 @@ public class EntityManager implements java.io.Serializable{
             for (Entity proj : getProjectils()){ // getMissiles
                 if (e.getBounds().overlaps(proj.getBounds())){
                     if (proj instanceof Missile) {
-                        e.setDamage(20);
+                        e.setDamage(25);
                     }
                     else if (proj instanceof Bullet) {
                         e.setDamage(18);
@@ -167,7 +183,7 @@ public class EntityManager implements java.io.Serializable{
                         entities.add(curExplosion);
                         scoreValue += 10;
                         entities.remove(e);
-                        int randInt = MathUtils.random(0,15);//(0,15)
+                        int randInt = MathUtils.random(0,3);//(0,30)
                         if (randInt == 1) {
                             BonusBullets bonusBullets = new BonusBullets(new Vector2(e.pos.x, e.pos.y), new Vector2(0, 0));
                             bonusBullets.setBornTime(System.currentTimeMillis());

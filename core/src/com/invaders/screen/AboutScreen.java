@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.invaders.AudioManager;
 import com.invaders.MainGame;
 import com.invaders.camera.OrthoCamera;
@@ -34,9 +35,14 @@ public class AboutScreen extends Screen {
 
     @Override
     public void render(SpriteBatch sb) {
-        sb.setProjectionMatrix(camera.combined);
+        Matrix4 normalProjection = new Matrix4().setToOrtho2D(0,0,
+                Gdx.graphics.getWidth(),
+                Gdx.graphics.getHeight());
+        sb.setProjectionMatrix(normalProjection);
         sb.begin();
-        font.draw(sb,"Roman Karanchuk Production 2016", MainGame.WIDTH/2, MainGame.HEIGHT/2);
+        font.draw(sb,"Roman Karanchuk Production 2016",
+                Gdx.graphics.getWidth()/2,
+                Gdx.graphics.getHeight()/2);
         sb.end();
     }
 
