@@ -11,8 +11,8 @@ import com.invaders.TextureManager;
  * Created by NotePad.by on 07.06.2016.
  */
 public class BonusShield extends Entity{
-    private long lifeTime = 5000;
-    private long bornTime ;
+    private float lifeTime = 5f;
+    private float bornTime ;
 
     private static final int        FRAME_COLS = 5;
     private static final int        FRAME_ROWS = 4;
@@ -21,9 +21,9 @@ public class BonusShield extends Entity{
     private transient TextureRegion[]                 frames;
     private transient TextureRegion currentFrame;
 
-    public long getBornTime(){return this.bornTime;}
-    public void setBornTime(long bornTime){this.bornTime = bornTime;}
-    public long getLifeTime(){return this.lifeTime;}
+    public float getBornTime(){return this.bornTime;}
+    public void setBornTime(float bornTime){this.bornTime = bornTime;}
+    public float getLifeTime(){return this.lifeTime;}
     public TextureRegion getCurrentFrame(){
         return this.currentFrame;
     }

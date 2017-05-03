@@ -36,8 +36,8 @@ public class Enemy extends Entity implements java.io.Serializable{
         pos.add(direction);
 
         if (pos.y <= -TextureManager.ENEMY.getHeight()){
-            float x = MathUtils.random(0, MainGame.WIDTH - TextureManager.ENEMY.getWidth());
-            pos.set(x, MainGame.HEIGHT);
+            float x = MathUtils.random(0, Gdx.graphics.getWidth() - TextureManager.ENEMY.getWidth());
+            pos.set(x, Gdx.graphics.getHeight());
         }
     }
 }

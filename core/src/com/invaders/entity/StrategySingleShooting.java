@@ -14,10 +14,10 @@ public class StrategySingleShooting implements Strategy ,java.io.Serializable{
     }
     @Override
     public void shoot() {
-        if (System.currentTimeMillis() - getPlayer().getLastGunFire() >= 100) {
+        if (getPlayer().getEntityManager().getCurTime() - getPlayer().getLastGunFire() >= 0.1f) {
             getPlayer().getEntityManager().addEntity(new Bullet(new Vector2(getPlayer().pos.x +15, getPlayer().pos.y+30),
                     new Vector2(0, 15)));
-            getPlayer().setLastGunFire(System.currentTimeMillis());
+            getPlayer().setLastGunFire(getPlayer().getEntityManager().getCurTime());
         }
     }
 }

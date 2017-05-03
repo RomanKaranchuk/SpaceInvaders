@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+
 import com.invaders.AudioManager;
-import com.invaders.MainGame;
 import com.invaders.SerializationScore;
 import com.invaders.TextureManager;
 import com.invaders.camera.OrthoCamera;
@@ -16,7 +16,6 @@ import com.invaders.screen.ScreenManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
 /**
  * Created by NotePad.by on 29.05.2016.
  */
@@ -28,10 +27,9 @@ public class EntityManager implements java.io.Serializable{
     private ArrayList<Score> scores;
     private Score score;
     private OrthoCamera tempCamera;
-    private long startTime, tempStartTime;
+    private float startTime, tempStartTime, curTime;
     private int amountEnemy;
     private Context context;
-
 
 
 
@@ -39,6 +37,9 @@ public class EntityManager implements java.io.Serializable{
         return tempCamera;
     }
 
+    public float getCurTime(){
+        return this.curTime;
+    }
     public void addExtraEnemy(int amount){
         for (int i = 0; i < amount; i++) {
             float x = MathUtils.random(0, Gdx.graphics.getWidth() - TextureManager.ENEMY.getWidth());
@@ -49,11 +50,12 @@ public class EntityManager implements java.io.Serializable{
     }
 
     public EntityManager(int amount, OrthoCamera camera) {
-        startTime = System.currentTimeMillis();
+//        startTime = System.currentTimeMillis();
+        startTime = 0f;
         player = new Player(new Vector2(Gdx.graphics.getWidth()/2-TextureManager.PLAYER.getWidth()/2, 15), new Vector2(0, 0), this, camera);
         addExtraEnemy(amount);
         AudioManager.mainTheme.setLooping(true);
-        AudioManager.mainTheme.setVolume(0.1f);
+        AudioManager.mainTheme.setVolume(0.5f);
         AudioManager.setMusic(AudioManager.mainTheme);
         scoreFont = new BitmapFont();
         scoreValue = 0;
@@ -64,26 +66,31 @@ public class EntityManager implements java.io.Serializable{
         tempStartTime = startTime;
         context = new Context();
         context.setStrategy(new StrategySingleShooting(player));
+        curTime = 0f;
     }
     public Context getContext(){
         return context;
     }
 
     public void update(){
-        if ((System.currentTimeMillis() - tempStartTime >= 10000) &&
-                (tempStartTime - startTime <= 30000)){
+        curTime += Gdx.graphics.getDeltaTime();
+//        System.out.println(curTime);
+
+        if ((curTime - tempStartTime >= 10f) &&
+                (tempStartTime - startTime <= 30f)){
 //            addExtraEnemy(amountEnemy);
-            tempStartTime = System.currentTimeMillis();
+            tempStartTime = curTime;
         }
         for (BonusBullets bb : getBonusBullets()) {
-            if (System.currentTimeMillis() - bb.getBornTime() > bb.getLifeTime()) {
+//            System.out.println(curTime - bb.getBornTime());
+            if (curTime - bb.getBornTime() > bb.getLifeTime()) {
                 entities.remove(bb);
             }
         }
 
         for (BonusShield bs : getBonusShield()) {
-
-            if (System.currentTimeMillis() - bs.getBornTime() > bs.getLifeTime()) {
+//            System.out.println(curTime - bs.getBornTime());
+            if (curTime - bs.getBornTime() > bs.getLifeTime()) {
                 entities.remove(bs);
             }
         }
@@ -149,10 +156,10 @@ public class EntityManager implements java.io.Serializable{
         for (BonusShield bs : getBonusShield()) {
             if (bs.getBounds().overlaps(player.getBounds())) {
                 player.setHasShield(false);
-                player.setStartShield(0);
+                player.setStartShield(0f);
                 player.setHasShield(true);
-                if (player.getStartShield() == 0){
-                    player.setStartShield(System.currentTimeMillis());
+                if (player.getStartShield() == 0f){
+                    player.setStartShield(curTime);
                 }
                 entities.remove(bs);
             }
@@ -162,7 +169,7 @@ public class EntityManager implements java.io.Serializable{
         for (BonusBullets bb : getBonusBullets()) {
             if (bb.getBounds().overlaps(player.getBounds())){
                 AudioManager.setSound(AudioManager.findBonus, false);
-                context.setStrategy(new StrategyTripleShooting(player,System.currentTimeMillis()));
+                context.setStrategy(new StrategyTripleShooting(player,curTime));
                 entities.remove(bb);
             }
         }
@@ -186,11 +193,11 @@ public class EntityManager implements java.io.Serializable{
                         int randInt = MathUtils.random(0,3);//(0,30)
                         if (randInt == 1) {
                             BonusBullets bonusBullets = new BonusBullets(new Vector2(e.pos.x, e.pos.y), new Vector2(0, 0));
-                            bonusBullets.setBornTime(System.currentTimeMillis());
+                            bonusBullets.setBornTime(curTime);
                             entities.add(bonusBullets);
                         } else if (randInt == 2){
                             BonusShield bonusShield = new BonusShield(new Vector2(e.pos.x, e.pos.y), new Vector2(0, 0));
-                            bonusShield.setBornTime(System.currentTimeMillis());
+                            bonusShield.setBornTime(curTime);
                             entities.add(bonusShield);
                         }
                     }

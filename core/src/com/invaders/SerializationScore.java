@@ -1,5 +1,7 @@
 package com.invaders;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.invaders.entity.Score;
 
 import java.io.*;
@@ -14,7 +16,7 @@ public class SerializationScore {
     public static void Serializate(ArrayList<Score> scores){
         try{
             FileOutputStream fileOut =
-                    new FileOutputStream("D:/Java/SpaceInvaders/android/assets/scores_info.json");
+                    new FileOutputStream("scores_info.json");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(scores);
             out.close();
@@ -26,11 +28,14 @@ public class SerializationScore {
     }
     public static ArrayList<Score> Deserializate(){
         try{
-            FileInputStream fileIn = new FileInputStream("D:/Java/SpaceInvaders/android/assets/scores_info.json");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            ArrayList<Score> scores = (ArrayList<Score>) in.readObject();
-            in.close();
-            fileIn.close();
+//            FileInputStream fileIn = new FileInputStream("scores_info.json");
+//            ObjectInputStream in = new ObjectInputStream(fileIn);
+            InputStream is = Gdx.files.internal("scores_info.json").read();
+            ObjectInputStream ois = new ObjectInputStream(is);
+            ArrayList<Score> scores = (ArrayList<Score>) ois.readObject();
+            ois.close();
+            is.close();
+//            fileIn.close();
 //            out.println("Deserialized data is recoveried from /Java.../scores_info.json");
             return scores;
         } catch(IOException i){

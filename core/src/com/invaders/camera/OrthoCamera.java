@@ -4,6 +4,7 @@ package com.invaders.camera;
  * Created by NotePad.by on 28.05.2016.
  */
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -17,7 +18,7 @@ public class OrthoCamera extends OrthographicCamera implements java.io.Serializa
     Vector2 pos = new Vector2();
 
     public OrthoCamera(){
-        this(new VirtualViewport(MainGame.WIDTH, MainGame.HEIGHT));
+        this(new VirtualViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())); // was MainGame.WIDTH/MainGame.HEIGHT
     }
 
     public OrthoCamera(VirtualViewport virtualViewport){
@@ -72,7 +73,8 @@ public class OrthoCamera extends OrthographicCamera implements java.io.Serializa
         return new Vector2(rawtouch.x, rawtouch.y);
     }
     public void resize() {
-        VirtualViewport virtualViewport = new VirtualViewport(MainGame.WIDTH, MainGame.HEIGHT);
+        VirtualViewport virtualViewport = new VirtualViewport(Gdx.graphics.getWidth(),
+                Gdx.graphics.getHeight()); // was MainGame.WIDTH/MainGame.HEIGHT
         setVirtualViewport(virtualViewport);
         updateViewport();
     }

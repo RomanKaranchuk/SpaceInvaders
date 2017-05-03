@@ -27,12 +27,12 @@ import java.io.Console;
  */
 public class Player extends  Entity implements java.io.Serializable{
     private EntityManager entityManager;
-    private long lastMissileFire;
-    private long lastGunFire;
+    private float lastMissileFire;
+    private float lastGunFire;
     private OrthoCamera camera;
     private BonusShield bonusShield;
     private boolean hasShield = false;
-    private long startShield = 0;
+    private float startShield = 0f;
 
     float stateTime = 0f;
     int countFrames = 0;
@@ -96,7 +96,7 @@ public class Player extends  Entity implements java.io.Serializable{
         }
         if (this.tpFire == null){
             tpFire = new Touchpad(10, tpFireStyle);
-            tpFire.setBounds(MainGame.WIDTH-115, 15, 100, 100);
+            tpFire.setBounds(Gdx.graphics.getWidth()-115, 15, 100, 100);
         }
     }
 
@@ -112,7 +112,7 @@ public class Player extends  Entity implements java.io.Serializable{
     public float getStartShield(){
         return this.startShield;
     }
-    public void setStartShield(long startShield){
+    public void setStartShield(float startShield){
         this.startShield = startShield;
     }
     public Player(){}
@@ -140,8 +140,8 @@ public class Player extends  Entity implements java.io.Serializable{
         touchpadStyle.knob = touchKnob;
         touchpad = new Touchpad(10, touchpadStyle);
         tpFire = new Touchpad(10, tpFireStyle);
-        tpFire.setBounds(MainGame.WIDTH-115, 15, 100, 100);
-        touchpad.setBounds(15, 15, 100, 100);
+        tpFire.setBounds(Gdx.graphics.getWidth()-130, 30, 100, 100);
+        touchpad.setBounds(30, 30, 100, 100);
 
         stage = new Stage(new ScreenViewport(camera));
         stage.addActor(touchpad);
@@ -160,10 +160,10 @@ public class Player extends  Entity implements java.io.Serializable{
     public EntityManager getEntityManager(){
         return this.entityManager;
     }
-    public long getLastGunFire(){
+    public float getLastGunFire(){
         return this.lastGunFire;
     }
-    public void setLastGunFire(long newLastGunFire){
+    public void setLastGunFire(float newLastGunFire){
         this.lastGunFire = newLastGunFire;
     }
 
@@ -176,23 +176,23 @@ public class Player extends  Entity implements java.io.Serializable{
 //        blockSprite.setY(blockSprite.getY() + touchpad.getKnobPercentY() * blockspeed);
 //        blockSprite.draw(batch);
 //        sb.draw(texture,pos.x,pos.y);
-        tpFire.setBounds(Gdx.graphics.getWidth()-115, 15, 100, 100);
+        tpFire.setBounds(Gdx.graphics.getWidth()-130, 30, 100, 100);
 
 
         sb.draw(texture,pos.x,pos.y);
         if (this.hasShield) {
             stateTime += Gdx.graphics.getDeltaTime();
             if (countFrames < 8 ||
-                    System.currentTimeMillis()-this.startShield>5000) {
+                    this.getEntityManager().getCurTime()-this.startShield>5000) {
                 this.bonusShield.setCurrentFrame(this.bonusShield.getAnimation().getKeyFrame(stateTime, true));
             } else if (countFrames >= 8) {
                 this.bonusShield.setCurrentFrame(this.bonusShield.getAnimation().getKeyFrame(0.30f, false));
             }
-            if (System.currentTimeMillis() -startShield>10000){
+            if (this.getEntityManager().getCurTime() -startShield>10f){
                 this.hasShield = false;
                 this.setStartShield(0);
-            } else if (5000<System.currentTimeMillis()-startShield &&
-                    System.currentTimeMillis()-startShield<10000){
+            } else if (5f<this.getEntityManager().getCurTime()-startShield &&
+                    this.getEntityManager().getCurTime()-startShield<10f){
                 this.bonusShield.setCurrentFrame(this.bonusShield.getAnimation().getKeyFrame(stateTime, true));
             }
             countFrames += 1;
@@ -274,15 +274,15 @@ public class Player extends  Entity implements java.io.Serializable{
 //        System.out.println(touchpad.getKnobPercentX() + " " + touchpad.getKnobPercentY());
         setDirection(dx*350,dy*350);
 
-        if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) ||
-        Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT) ||
+        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) ||
+        Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT) ||
                 tpFire.isTouched()){
-            if (System.currentTimeMillis() - lastMissileFire >= 300) {
+            if (this.getEntityManager().getCurTime() - lastMissileFire >= 0.3f) {
                 entityManager.addEntity(new Missile(new Vector2(pos.x +0, pos.y+30),
                                                     new Vector2(0, 15)));
                 entityManager.addEntity(new Missile(new Vector2(pos.x +30, pos.y+30),
                                                     new Vector2(0, 15)));
-                lastMissileFire = System.currentTimeMillis();
+                lastMissileFire = this.getEntityManager().getCurTime();
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {

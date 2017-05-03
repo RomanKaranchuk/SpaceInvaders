@@ -23,6 +23,6 @@ public class Missile extends Entity implements java.io.Serializable{
     }
 
     public boolean checkEnd(){
-        return pos.y >= MainGame.HEIGHT;
+        return pos.y >= Gdx.graphics.getHeight();
     }
 }

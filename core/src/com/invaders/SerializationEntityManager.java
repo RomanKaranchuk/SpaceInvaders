@@ -1,5 +1,6 @@
 package com.invaders;
 
+import com.badlogic.gdx.Gdx;
 import com.invaders.entity.EntityManager;
 import com.invaders.entity.Score;
 
@@ -13,7 +14,7 @@ public class SerializationEntityManager {
     public static void Serializate(ArrayList<EntityManager> entityManagers){
         try{
             FileOutputStream fileOut =
-                    new FileOutputStream("D:/Java/SpaceInvaders/android/assets/entity_manager_info.json");
+                    new FileOutputStream("entity_manager_info.json");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(entityManagers);
             out.close();
@@ -25,11 +26,15 @@ public class SerializationEntityManager {
     }
     public static ArrayList<EntityManager> Deserializate(){
         try{
-            FileInputStream fileIn = new FileInputStream("D:/Java/SpaceInvaders/android/assets/entity_manager_info.json");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            ArrayList<EntityManager> entityManager = (ArrayList<EntityManager>) in.readObject();
-            in.close();
-            fileIn.close();
+//            FileInputStream fileIn = new FileInputStream("entity_manager_info.json");
+//            ObjectInputStream in = new ObjectInputStream(fileIn);
+            InputStream is = Gdx.files.internal("entity_manager_info.json").read();
+            ObjectInputStream ois = new ObjectInputStream(is);
+            ArrayList<EntityManager> entityManager = (ArrayList<EntityManager>) ois.readObject();
+            ois.close();
+            is.close();
+//            in.close();
+//            fileIn.close();
 //            System.out.println("Deserialized data is recoveried from /Java.../entity_manager_info.json");
             return entityManager;
         } catch(IOException i){

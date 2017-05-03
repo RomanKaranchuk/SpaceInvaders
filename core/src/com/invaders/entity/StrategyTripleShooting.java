@@ -7,8 +7,8 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class StrategyTripleShooting implements Strategy, java.io.Serializable{
     private Player player;
-    private long startTimeBonus, durBonus=5000;
-    public StrategyTripleShooting(Player player, long startTimeBonus){
+    private float startTimeBonus, durBonus=5f;
+    public StrategyTripleShooting(Player player, float startTimeBonus){
         this.player = player;
         this.startTimeBonus = startTimeBonus;
     }
@@ -18,8 +18,8 @@ public class StrategyTripleShooting implements Strategy, java.io.Serializable{
     }
     @Override
     public void shoot() {
-        if (System.currentTimeMillis() - getPlayer().getLastGunFire() >= 100 &&
-                System.currentTimeMillis()-startTimeBonus <= durBonus) {
+        if (getPlayer().getEntityManager().getCurTime() - getPlayer().getLastGunFire() >= 0.1f &&
+                getPlayer().getEntityManager().getCurTime()-startTimeBonus <= durBonus) {
             getPlayer().getEntityManager().addEntity(
                     new Bullet(
                     new Vector2(getPlayer().pos.x +15, getPlayer().pos.y+30),
@@ -32,8 +32,8 @@ public class StrategyTripleShooting implements Strategy, java.io.Serializable{
                     new Bullet(
                     new Vector2(getPlayer().pos.x +15, getPlayer().pos.y+30),
                     new Vector2(-1, 15)));
-            getPlayer().setLastGunFire(System.currentTimeMillis());
-        } else if (System.currentTimeMillis()-startTimeBonus > durBonus){
+            getPlayer().setLastGunFire(getPlayer().getEntityManager().getCurTime());
+        } else if (getPlayer().getEntityManager().getCurTime()-startTimeBonus > durBonus){
             player.getEntityManager().getContext().setStrategy(new StrategySingleShooting(player));
         }
     }

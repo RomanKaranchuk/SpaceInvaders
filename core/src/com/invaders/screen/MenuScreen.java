@@ -29,9 +29,12 @@ public class MenuScreen extends Screen {
     private Map<Integer, Rectangle> menuItemsRects;
     private ShapeRenderer shapeRenderer;
 
+
     @Override
     public void create() {
         camera = new OrthoCamera();
+
+
         font = new BitmapFont();
         titleFont = new BitmapFont();
 
@@ -46,10 +49,9 @@ public class MenuScreen extends Screen {
 
     @Override
     public void update() {
-        camera.resize();
         camera.update();
         if (!AudioManager.getCurrentMusic().isPlaying()) {
-//            AudioManager.setMusic(AudioManager.menuTheme);
+            AudioManager.setMusic(AudioManager.menuTheme);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)){
             if (currentItem > 0) {
@@ -74,10 +76,9 @@ public class MenuScreen extends Screen {
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             for (Map.Entry<Integer, Rectangle> item : menuItemsRects.entrySet()) {
-                if (item.getValue().contains(touchPos.x, touchPos.y) &&
-                    currentItem != item.getKey()) {
+                if (item.getValue().contains(touchPos.x, touchPos.y)) {
                     currentItem = item.getKey();
-//                    select();
+                    select();
                     AudioManager.setSound(AudioManager.selectMenu, true);
                 }
             }
@@ -100,7 +101,9 @@ public class MenuScreen extends Screen {
             ScreenManager.getCurrentScreen().setPaused(true);
             ScreenManager.setScreen(new AboutScreen());
         } else if (currentItem == 4){
-            Gdx.app.exit();
+            ScreenManager.getCurrentScreen().setPaused(true);
+            ScreenManager.setScreen(new MenuOrExitGameOverScreen(null));
+//            Gdx.app.exit();
         }
     }
 
@@ -116,10 +119,9 @@ public class MenuScreen extends Screen {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(80 / 255.0f, 80 / 255.0f, 50 / 255.0f, 1);
             shapeRenderer.rect(Gdx.graphics.getWidth() / 2 - 20,
-                    Gdx.graphics.getHeight()*0.55f - i*35-15,//Gdx.graphics.getHeight()*0.05f,
+                    Gdx.graphics.getHeight()*0.55f - i*35,
                     90,
-                    20);
-//            System.out.println("Check =" +  Gdx.graphics.getHeight());
+                    -20);
             shapeRenderer.end();
         }
 
@@ -139,9 +141,9 @@ public class MenuScreen extends Screen {
                     Gdx.graphics.getWidth()/2-20,
                     Gdx.graphics.getHeight()*0.55f - i*35);//Gdx.graphics.getHeight()*0.05f);
 
-            menuItemsRects.put(menuItems.length-i-1,
+            menuItemsRects.put(i,
                     new Rectangle(Gdx.graphics.getWidth()/2-20,
-                            Gdx.graphics.getHeight()*0.55f - i*35 + 60,//Gdx.graphics.getHeight()*0.05f,
+                            Gdx.graphics.getHeight()-(Gdx.graphics.getHeight()*0.55f - i*35) ,//+60//Gdx.graphics.getHeight()*0.05f,
                     90,
                     20));
         }
@@ -150,6 +152,7 @@ public class MenuScreen extends Screen {
                 "SPACE INVADERS",
                 Gdx.graphics.getWidth()/2-20,
                 Gdx.graphics.getHeight()*0.55f + 35);
+
         sb.end();
 
     }

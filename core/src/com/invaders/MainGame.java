@@ -18,7 +18,9 @@ import com.invaders.screen.ScreenManager;
 public class MainGame implements ApplicationListener {
 	public static int WIDTH = 480, HEIGHT = 800;
 	private SpriteBatch batch;
-	ParticleEffect pe;
+	private ParticleEffect pe;
+
+
 //	private static final int        FRAME_COLS = 5;         // #1
 //	private static final int        FRAME_ROWS = 5;         // #2
 //
@@ -84,7 +86,7 @@ public class MainGame implements ApplicationListener {
 			ScreenManager.getCurrentScreen().render(batch);
 		}
 
-//		pe.update(Gdx.graphics.getDeltaTime());
+		pe.update(Gdx.graphics.getDeltaTime());
 
 //		stateTime += Gdx.graphics.getDeltaTime();           // #15
 
@@ -97,7 +99,7 @@ public class MainGame implements ApplicationListener {
 
 
 		batch.begin();
-//		pe.draw(batch);
+		pe.draw(batch);
 
 
 //		batch.draw(currentFrame, 0, 0);             // #17

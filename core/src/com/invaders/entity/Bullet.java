@@ -1,5 +1,6 @@
 package com.invaders.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.invaders.AudioManager;
 import com.invaders.MainGame;
@@ -20,6 +21,6 @@ public class Bullet extends Entity implements java.io.Serializable{
     }
 
     public boolean checkEnd(){
-        return pos.y >= MainGame.HEIGHT;
+        return pos.y >= Gdx.graphics.getHeight();
     }
 }
